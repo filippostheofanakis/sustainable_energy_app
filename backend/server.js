@@ -4,12 +4,33 @@ const express = require('express');
 const app = express();
 const connectDB = require('./database');
 const energyUsageRoutes = require('./routes/energyUsageRoutes');
+const cron = require('node-cron');
+const cors = require('cors');
+const axios = require('axios'); // Ensure axios is installed: yarn add axios
+const simulatedData = require('./simulateData'); // This line is new; adjust path as necessary
 
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use('/api', energyUsageRoutes);
 connectDB();
+
+
+cron.schedule('* * * * *', async () => { // This runs every minute as an example
+  try {
+    // const response = await axios.get('YOUR_DEVICE_API_ENDPOINT');
+    // Process and store the response data as needed
+  } catch (error) {
+    console.error('Failed to fetch device data:', error);
+  }
+});
+
+app.post('/api/device-data', async (req, res) => {
+  const data = req.body;
+  // Process and store the data
+  res.status(200).send('Data received');
+});
 
 // Health check route
 app.get('/health', (req, res) => {
