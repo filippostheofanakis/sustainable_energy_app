@@ -4,7 +4,8 @@ const express = require('express');
 const router = express.Router();
 const EnergyUsage = require('../models/EnergyUsage');
 const { generateSimulatedData } = require('../simulateData'); // Adjust the path as needed
-
+const { aggregateDailyConsumption } = require('../energyAnalysis'); // New import
+const { generateRecommendations } = require('../energyRecommendations'); // New import
 
 // POST route to create a new energy usage record
 router.post('/energy-usage', async (req, res) => {
@@ -14,6 +15,27 @@ router.post('/energy-usage', async (req, res) => {
     res.status(201).json(savedRecord);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+
+// New endpoint for getting daily aggregation
+router.get('/energy-usage/daily', async (req, res) => {
+  try {
+    const dailyAggregation = await aggregateDailyConsumption();
+    res.json(dailyAggregation);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// New endpoint for getting recommendations
+router.get('/energy-usage/recommendations', async (req, res) => {
+  try {
+    const recommendations = await generateRecommendations();
+    res.json(recommendations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
