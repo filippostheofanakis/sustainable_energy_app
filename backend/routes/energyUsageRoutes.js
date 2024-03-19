@@ -4,8 +4,15 @@ const express = require('express');
 const router = express.Router();
 const EnergyUsage = require('../models/EnergyUsage');
 const { generateSimulatedData } = require('../simulateData'); // Adjust the path as needed
-const { aggregateDailyConsumption } = require('../energyAnalysis'); // New import
-const { generateRecommendations } = require('../energyRecommendations'); // New import
+const { aggregateDailyConsumption } = require('../services/energyAnalysis'); // New import
+const {
+  calculateDailyTotalConsumption,
+  calculateDailyAverageConsumption,
+  calculatePeakConsumptionTimes
+} = require('../services/energyAnalysis');
+const { generateRecommendations } = require('../services/recommendationsEngine');
+
+
 
 // POST route to create a new energy usage record
 router.post('/energy-usage', async (req, res) => {
@@ -15,6 +22,46 @@ router.post('/energy-usage', async (req, res) => {
     res.status(201).json(savedRecord);
   } catch (err) {
     res.status(400).json({ message: err.message });
+  }
+});
+
+// Route to get energy-saving recommendations
+router.get('/recommendations', async (req, res) => {
+  try {
+    const recommendations = await generateRecommendations();
+    res.json(recommendations);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Route to get daily total consumption
+router.get('/daily-total-consumption', async (req, res) => {
+  try {
+    const dailyTotal = await calculateDailyTotalConsumption();
+    res.json(dailyTotal);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Route to get daily average consumption
+router.get('/daily-average-consumption', async (req, res) => {
+  try {
+    const dailyAverage = await calculateDailyAverageConsumption();
+    res.json(dailyAverage);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+// Route to get peak consumption times
+router.get('/peak-consumption-times', async (req, res) => {
+  try {
+    const peakTimes = await calculatePeakConsumptionTimes();
+    res.json(peakTimes);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
 

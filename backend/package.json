@@ -9,5 +9,12 @@
     "express": "^4.18.3",
     "mongoose": "^8.2.1",
     "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
   }
 }
