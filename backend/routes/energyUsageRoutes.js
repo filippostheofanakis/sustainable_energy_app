@@ -3,7 +3,6 @@
 const express = require('express');
 const router = express.Router();
 const EnergyUsage = require('../models/EnergyUsage');
-const { generateSimulatedData } = require('../simulateData'); // Adjust the path as needed
 const { aggregateDailyConsumption } = require('../services/energyAnalysis'); // New import
 const {
   calculateDailyTotalConsumption,
@@ -88,7 +87,6 @@ router.get('/energy-usage/recommendations', async (req, res) => {
 
 // Add to your Express router
 router.get('/trigger-simulate-data', (req, res) => {
-  generateSimulatedData();
   res.json({ message: 'Data generation triggered.' });
 });
 
