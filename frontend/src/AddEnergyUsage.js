@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Button, TextField, Typography, Container, Paper } from '@material-ui/core';
+
 
 function AddEnergyUsage() {
   const [consumption, setConsumption] = useState('');
@@ -17,27 +19,31 @@ function AddEnergyUsage() {
   };
 
   return (
+    <Container component={Paper} style={{ padding: '20px', marginTop: '20px' }}>
+    <Typography variant="h6">Add Energy Usage Record</Typography>
     <form onSubmit={handleSubmit}>
-      <h2>Add Energy Usage Record</h2>
-      <div>
-        <label>Consumption (kWh):</label>
-        <input
-          type="number"
-          value={consumption}
-          onChange={(e) => setConsumption(e.target.value)}
-        />
-      </div>
-      <div>
-        <label>Device:</label>
-        <input
-          type="text"
-          value={device}
-          onChange={(e) => setDevice(e.target.value)}
-        />
-      </div>
-      <button type="submit">Add Record</button>
+      <TextField
+        label="Consumption (kWh)"
+        type="number"
+        value={consumption}
+        onChange={(e) => setConsumption(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <TextField
+        label="Device"
+        type="text"
+        value={device}
+        onChange={(e) => setDevice(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+      <Button type="submit" color="primary" variant="contained">
+        Add Record
+      </Button>
     </form>
-  );
+  </Container>
+);
 }
 
 export default AddEnergyUsage;
