@@ -1,4 +1,4 @@
-// recommendationsEngine.js
+// services/recommendationsEngine.js
 
 const { calculateDailyAverageConsumption, calculatePeakConsumptionTimes } = require('./energyAnalysis');
 

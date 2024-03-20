@@ -1,4 +1,4 @@
-// energyAnalysis.js
+// services/energyAnalysis.js
 
 const EnergyUsage = require('../models/EnergyUsage');
 

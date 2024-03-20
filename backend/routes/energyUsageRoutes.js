@@ -20,19 +20,12 @@ router.post('/energy-usage', async (req, res) => {
     const savedRecord = await newRecord.save();
     res.status(201).json(savedRecord);
   } catch (err) {
+    console.error(err); // Log the error
     res.status(400).json({ message: err.message });
   }
 });
 
-// Route to get energy-saving recommendations
-router.get('/recommendations', async (req, res) => {
-  try {
-    const recommendations = await generateRecommendations();
-    res.json(recommendations);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
+
 
 // Route to get daily total consumption
 router.get('/daily-total-consumption', async (req, res) => {
@@ -81,6 +74,7 @@ router.get('/energy-usage/recommendations', async (req, res) => {
     const recommendations = await generateRecommendations();
     res.json(recommendations);
   } catch (err) {
+    console.error(err); // Log the error
     res.status(500).json({ message: err.message });
   }
 });

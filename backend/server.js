@@ -8,12 +8,15 @@ const cron = require('node-cron');
 const cors = require('cors');
 const axios = require('axios'); // Ensure axios is installed: yarn add axios
 const simulatedData = require('./simulateData'); // This line is new; adjust path as necessary
+const deviceRoutes = require('./routes/deviceRoutes')
 
 app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use('/api', energyUsageRoutes);
+app.use('/api', deviceRoutes); // Use device routes
+
 connectDB();
 
 

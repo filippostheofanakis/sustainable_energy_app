@@ -9,6 +9,8 @@ import AddEnergyUsage from './AddEnergyUsage';
 import EnergyUsageChart from './EnergyUsageChart';
 import axios from 'axios';
 import { Grid } from '@material-ui/core';
+import RegisterDevice from './components/DeviceManagement';
+import DeviceManagement from './components/DeviceManagement';
 
 
 function App() {
@@ -26,6 +28,9 @@ function App() {
   return (
     <Layout>
       <Grid container spacing={3}>
+      <Grid item xs={12}>
+          <DeviceManagement /> {/* Place the new Device Management component */}
+        </Grid>
         <Grid item xs={12}>
           <AddEnergyUsage />
         </Grid>
