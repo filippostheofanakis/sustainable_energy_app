@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns'; // make sure this is installed
+import { Paper, Typography } from '@material-ui/core';
+
 
 const EnergyUsageChart = ({ data }) => {
     const chartRef = useRef(null);
@@ -61,7 +63,15 @@ const EnergyUsageChart = ({ data }) => {
         };
     }, [data]); // Only re-run the effect if new data comes in
 
-    return <canvas ref={chartRef} />;
-};
-
-export default EnergyUsageChart;
+    return (
+        <Paper elevation={3}>
+          <Typography variant="h6" align="center" style={{ padding: '16px 0' }}>
+            Energy Consumption Over Time
+          </Typography>
+          <canvas
+    ref={chartRef} />
+    </Paper>
+    );
+    };
+    
+    export default EnergyUsageChart;

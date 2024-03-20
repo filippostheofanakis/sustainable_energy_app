@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import AddEnergyUsage from './AddEnergyUsage';
 import EnergyUsageChart from './EnergyUsageChart';
 import axios from 'axios';
+import { Grid } from '@material-ui/core';
 
 
 function App() {
@@ -24,11 +25,17 @@ function App() {
 
   return (
     <Layout>
-    <div className="App">
-      <AddEnergyUsage />
-      <EnergyUsageList />
-            <EnergyUsageChart data={energyData} />
-    </div>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <AddEnergyUsage />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <EnergyUsageList />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <EnergyUsageChart data={energyData} />
+        </Grid>
+      </Grid>
     </Layout>
   );
 }
