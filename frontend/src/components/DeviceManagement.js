@@ -22,6 +22,10 @@ function DeviceManagement() {
     const [discoveredDevices, setDiscoveredDevices] = useState([]);
     const [isDevicesDiscovered, setIsDevicesDiscovered] = useState(false);
 
+    const [deviceData, setDeviceData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null)
+
     // Mock list of discoverable devices
     const mockDiscoverableDevices = [
         { deviceId: "thermostat123", name: "Smart Thermostat", type: "Thermostat" },
@@ -71,12 +75,37 @@ function DeviceManagement() {
         setOpen(false);
     };
 
+
+    const fetchDeviceData = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await axios.get('http://localhost:5000/api/devices/fetch-simulated-device-data');
+            setDeviceData(response.data);
+        } catch (err) {
+            setError('Failed to fetch device data.');
+        }
+        setIsLoading(false);
+    };
+
+
     return (
         <Container component={Paper} style={{ padding: '20px', marginTop: '20px' }}>
             <Typography variant="h6">Device Discovery and Management</Typography>
             <Button onClick={handleDiscoverDevices} color="primary" variant="contained">
                 Discover Devices
             </Button>
+            <Button onClick={fetchDeviceData} color="primary" variant="contained" style={{ marginLeft: '10px' }}>
+                Fetch Device Data
+            </Button>
+            {isLoading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            {deviceData && (
+                <div>
+                    <p>Timestamp: {deviceData.timestamp}</p>
+                    <p>Consumption: {deviceData.consumption}</p>
+                </div>
+            )}
             {isDevicesDiscovered && (
                 <List>
                     {discoveredDevices.map((device, index) => (
