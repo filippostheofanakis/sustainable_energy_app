@@ -8,7 +8,9 @@ const cron = require('node-cron');
 const cors = require('cors');
 const axios = require('axios'); // Ensure axios is installed: yarn add axios
 const simulatedData = require('./simulateData'); // This line is new; adjust path as necessary
-const deviceRoutes = require('./routes/deviceRoutes')
+const deviceRoutes = require('./routes/deviceRoutes');
+const deviceDiscoveryService = require('./services/deviceDiscovery');
+
 
 app.use(cors());
 
@@ -16,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', energyUsageRoutes);
 app.use('/api', deviceRoutes); // Use device routes
+app.use('/api/devices', deviceRoutes);
 
 connectDB();
 
@@ -27,6 +30,18 @@ cron.schedule('* * * * *', async () => { // This runs every minute as an example
   } catch (error) {
     console.error('Failed to fetch device data:', error);
   }
+});
+
+// Endpoint to start device discovery
+app.get('/api/start-discovery', (req, res) => {
+  deviceDiscoveryService.startDiscovery();
+  res.send('Device discovery started');
+});
+
+// Endpoint to stop device discovery
+app.get('/api/stop-discovery', (req, res) => {
+  deviceDiscoveryService.stopDiscovery();
+  res.send('Device discovery stopped');
 });
 
 app.post('/api/device-data', async (req, res) => {

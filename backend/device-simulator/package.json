@@ -1,0 +1,12 @@
+{
+    "name": "device-simulator",
+    "version": "1.0.0",
+    "description": "",
+    "main": "deviceSimulator.js",
+    "scripts": {
+      "start": "node deviceSimulator.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1"
+    }
+  }

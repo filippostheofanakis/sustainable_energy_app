@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const Device = require('../models/Device');
+const { getSimulatedDeviceData } = require('../services/deviceDiscovery');
+
 
 // Register a new device with API endpoint
 router.post('/devices', async (req, res) => {
@@ -28,6 +30,16 @@ router.get('/devices', async (req, res) => {
   } catch (error) {
     console.error(error); // Log the error
     res.status(500).json({ message: error.message });
+  }
+});
+
+// New route to fetch data from the simulated device
+router.get('/fetch-simulated-device-data', async (req, res) => {
+  try {
+    const data = await getSimulatedDeviceData();
+    res.json(data);
+  } catch (error) {
+    res.status(500).send("Failed to fetch data from simulated device.");
   }
 });
 
