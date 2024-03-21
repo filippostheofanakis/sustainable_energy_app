@@ -4,9 +4,10 @@
     "description": "",
     "main": "deviceSimulator.js",
     "scripts": {
-      "start": "node deviceSimulator.js"
+        "start": "node deviceSimulator.js"
     },
     "dependencies": {
-      "express": "^4.17.1"
+        "bonjour": "^3.5.0",
+        "express": "^4.19.1"
     }
-  }
+}

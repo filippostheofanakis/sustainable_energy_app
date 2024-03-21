@@ -1,6 +1,7 @@
+const bonjour = require('bonjour')();
 const express = require('express');
 const app = express();
-const port = 8080; // This should match the port you exposed and mapped in Docker
+const port = 8080;
 
 app.get('/api/data', (req, res) => {
   const simulatedData = {
@@ -10,6 +11,18 @@ app.get('/api/data', (req, res) => {
   res.json(simulatedData);
 });
 
-app.listen(port, () => {
-  console.log(`Device simulator running on port ${port}`);
+const server = app.listen(port, () => {
+  console.log(`Simulated device running on port ${port}`);
+  
+  // Advertise the server using mDNS
+  bonjour.publish({ name: 'Simulated Device', type: 'http', port: port });
+});
+
+// Handle process termination to cleanly unpublish the service
+process.on('SIGINT', () => {
+  bonjour.unpublishAll(() => {
+    server.close(() => {
+      process.exit();
+    });
+  });
 });

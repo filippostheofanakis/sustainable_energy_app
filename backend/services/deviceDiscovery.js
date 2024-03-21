@@ -1,6 +1,7 @@
 // services/deviceDiscovery.js
 const bonjour = require('bonjour')();
 const axios = require('axios'); // Make sure axios is installed
+const DeviceData = require ('../models/DeviceData');
 
 let browser;
 
@@ -8,9 +9,29 @@ function startDiscovery() {
   // Browser to discover devices
   browser = bonjour.find({ type: 'http' });
 
-  browser.on('up', service => {
+  browser.on('up', async service => {
     console.log("Device up: ", service);
-    // Here you would typically check the service name or type and decide if you want to save it
+  
+    // Check the service name or type to decide if it's a device you're interested in
+    if (service.type === 'http') { // Replace this with the actual condition
+      try {
+        // Construct the device's API URL from its hostname and port
+        const deviceApiUrl = `http://${service.host}:${service.port}/api/data`; // Replace '/api/data' with the actual path
+  
+        // Fetch data from the device
+        const response = await axios.get(deviceApiUrl);
+        console.log(response.data);
+  
+        const deviceData = new DeviceData({
+          deviceId: service.name, // Replace this with the actual device ID
+          timestamp: new Date(),
+          consumption: response.data.emergyConsumption // Replace this with the actual consumption data
+        });
+        await deviceData.save();
+      } catch (error) {
+        console.error("Error getting data from device:", error);
+      }
+    }
   });
 
   browser.on('down', service => {
