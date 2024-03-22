@@ -33,14 +33,6 @@ router.get('/devices', async (req, res) => {
   }
 });
 
-// New route to fetch data from the simulated device
-router.get('/fetch-simulated-device-data', async (req, res) => {
-  try {
-    const data = await getSimulatedDeviceData();
-    res.json(data);
-  } catch (error) {
-    res.status(500).send("Failed to fetch data from simulated device.");
-  }
-});
+
 
 module.exports = router;

@@ -7,4 +7,4 @@ const DeviceDataSchema = new mongoose.Schema({
   consumption: Number
 });
 
-module.exports = mongoose.model('DeviceData', DeviceDataSchema);
+module.exports = mongoose.model('DeviceData', DeviceDataSchema, 'devicedatas');

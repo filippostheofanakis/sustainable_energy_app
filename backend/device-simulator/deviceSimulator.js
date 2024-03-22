@@ -1,3 +1,4 @@
+//deviceSimulator.js
 const bonjour = require('bonjour')();
 const express = require('express');
 const app = express();

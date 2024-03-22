@@ -1,3 +1,4 @@
+//DeviceManagement.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
@@ -101,6 +102,7 @@ function DeviceManagement() {
           const response = await axios.get('http://localhost:5000/api/devices/fetch-simulated-device-data');
           setDeviceData(response.data);
           setIsLoading(false);
+          console.log(response.data); // Log the fetched data
         } catch (error) {
           console.error('Error fetching device data:', error);
           setError('Failed to fetch device data. Please try again.');
