@@ -33,12 +33,31 @@ function DeviceManagement() {
         // Add more mock devices with unique deviceId values
     ];
 
-    const handleDiscoverDevices = () => {
-        // Simulate the discovery process
+    const handleMdnsDiscovery = async () => {
+  console.log("Starting mDNS device discovery...");
+  try {
+    const response = await axios.get('http://localhost:5000/api/start-discovery');
+    console.log(response.data); // Should log 'Device discovery started'
+  } catch (error) {
+    console.error("Error starting mDNS device discovery:", error);
+  }
+};
+
+    const handleDiscoverDevices = async () => {
         console.log("Discovering devices...");
-        setDiscoveredDevices(mockDiscoverableDevices);
-        setIsDevicesDiscovered(true);
-    };
+        setIsLoading(true);
+        try {
+            // Assuming your backend updates a list of devices upon discovery
+            const response = await axios.get('http://localhost:5000/api/devices');
+            console.log(response.data);
+            setDiscoveredDevices(response.data);
+            setIsDevicesDiscovered(true);
+        } catch (error) {
+            console.error("Error during device discovery:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const handleAddDevice = async () => {
         try {
@@ -77,16 +96,17 @@ function DeviceManagement() {
 
 
     const fetchDeviceData = async () => {
-        setIsLoading(true);
-        setError(null);
         try {
-            const response = await axios.get('http://localhost:5000/api/devices/fetch-simulated-device-data');
-            setDeviceData(response.data);
-        } catch (err) {
-            setError('Failed to fetch device data.');
+          setIsLoading(true);
+          const response = await axios.get('http://localhost:5000/api/devices/fetch-simulated-device-data');
+          setDeviceData(response.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error('Error fetching device data:', error);
+          setError('Failed to fetch device data. Please try again.');
+          setIsLoading(false);
         }
-        setIsLoading(false);
-    };
+      };
 
 
     return (
@@ -95,6 +115,9 @@ function DeviceManagement() {
             <Button onClick={handleDiscoverDevices} color="primary" variant="contained">
                 Discover Devices
             </Button>
+            <Button onClick={handleMdnsDiscovery} color="primary" variant="contained">
+  Discover mDNS Devices
+</Button>
             <Button onClick={fetchDeviceData} color="primary" variant="contained" style={{ marginLeft: '10px' }}>
                 Fetch Device Data
             </Button>

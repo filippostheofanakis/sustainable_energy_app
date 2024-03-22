@@ -10,6 +10,8 @@ const axios = require('axios'); // Ensure axios is installed: yarn add axios
 const simulatedData = require('./simulateData'); // This line is new; adjust path as necessary
 const deviceRoutes = require('./routes/deviceRoutes');
 const deviceDiscoveryService = require('./services/deviceDiscovery');
+const {startDiscovery} = require('./services/deviceDiscovery');
+const DeviceData = require('./models/DeviceData'); // Import your DeviceData model
 
 
 app.use(cors());
@@ -53,6 +55,34 @@ app.post('/api/device-data', async (req, res) => {
 // Health check route
 app.get('/health', (req, res) => {
   res.send({ status: 'UP' });
+});
+
+app.get('/api/devices', async (req, res) => {
+  const devices = await DeviceData.find(); // Replace with your method of getting the list of devices
+  res.json(devices);
+});
+
+app.get('/api/devices/fetch-simulated-device-data', async (req, res) => {
+  console.log('fetch-simulated-device-data route hit'); // Add this line
+
+  try {
+    const deviceData = await DeviceData.findOne().sort({ _id: -1 });
+    if (!deviceData) {
+      return res.status(404).json({ message: 'No device data found' });
+    }
+    res.json(deviceData);
+  } catch (error) {
+    console.error('Failed to fetch device data:', error); // Make sure this line is present
+    res.status(500).json({
+      message: 'An error occurred while fetching device data',
+      error: error.message,
+      stack: error.stack
+    }); // Send back detailed error for debugging
+  }
+})
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+  res.status(500).json({ message: 'An internal server error occurred' });
 });
 
 // Define the PORT

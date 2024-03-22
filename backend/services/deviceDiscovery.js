@@ -1,62 +1,45 @@
-// services/deviceDiscovery.js
+//deviceDiscovery.js
 const bonjour = require('bonjour')();
-const axios = require('axios'); // Make sure axios is installed
-const DeviceData = require ('../models/DeviceData');
-
-let browser;
+const axios = require('axios');
+const DeviceData = require('../models/DeviceData'); // Import your DeviceData model
 
 function startDiscovery() {
-  // Browser to discover devices
-  browser = bonjour.find({ type: 'http' });
+  console.log('Starting device discovery...'); // Add this line
+
+  const browser = bonjour.find({ type: 'http' });
 
   browser.on('up', async service => {
-    console.log("Device up: ", service);
-  
-    // Check the service name or type to decide if it's a device you're interested in
-    if (service.type === 'http') { // Replace this with the actual condition
-      try {
-        // Construct the device's API URL from its hostname and port
-        const deviceApiUrl = `http://${service.host}:${service.port}/api/data`; // Replace '/api/data' with the actual path
-  
-        // Fetch data from the device
-        const response = await axios.get(deviceApiUrl);
-        console.log(response.data);
-  
-        const deviceData = new DeviceData({
-          deviceId: service.name, // Replace this with the actual device ID
-          timestamp: new Date(),
-          consumption: response.data.emergyConsumption // Replace this with the actual consumption data
-        });
-        await deviceData.save();
-      } catch (error) {
-        console.error("Error getting data from device:", error);
-      }
+    console.log('Found device:', service);
+    const url = `http://${service.addresses[0]}:${service.port}/api/data`;
+    const deviceData = await fetchDataFromDevice(url);
+
+    // Save the device and its data to the database
+    const newDeviceData = new DeviceData({
+      name: service.name,
+      address: service.addresses[0],
+      port: service.port,
+      data: deviceData,
+    });
+    try {
+      await newDeviceData.save();
+      console.log('Saved device data to database:', newDeviceData);
+    } catch (error) {
+      console.error('Failed to save device data to database:', error);
     }
   });
 
   browser.on('down', service => {
-    console.log("Device down: ", service);
-    // Here you might want to mark the device as inactive or remove it from your active list
+    console.log('Device went offline:', service);
   });
 }
 
-function stopDiscovery() {
-  if (browser) {
-    browser.stop();
-    bonjour.destroy();
-  }
-}
-
-// New function to fetch data from the simulated device
-async function getSimulatedDeviceData() {
+async function fetchDataFromDevice(url) {
   try {
-    const response = await axios.get('http://localhost:8080/api/data');
-    console.log(response.data);
-    return response.data;
+    const response = await axios.get(url);
+    console.log('Device data:', response.data);
   } catch (error) {
-    console.error("Error getting data from simulated device:", error);
-    throw error; // Rethrow the error to handle it in the calling function
+    console.error('Failed to fetch data from device:', error);
   }
 }
 
-module.exports = { startDiscovery, stopDiscovery, getSimulatedDeviceData };
+module.exports = { startDiscovery };
